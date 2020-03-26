@@ -1,5 +1,3 @@
-// usage e.g.
-// import test from './test';
-// export default [test];
+import login from './login';
 
-export default [];
+export default [login];
