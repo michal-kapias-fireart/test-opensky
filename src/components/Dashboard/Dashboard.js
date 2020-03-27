@@ -17,7 +17,8 @@ import DialogContent from "@material-ui/core/DialogContent";
 import Dialog from "@material-ui/core/Dialog";
 import LocalAirportIcon from "@material-ui/icons/LocalAirport";
 import DeparturesBoard from "../DeparturesBoard/DeparturesBoard";
-import { getAirports } from "../../store/modules/airports";
+import { getUser } from "../../store/modules/login";
+import { getAirports, selectAirport } from "../../store/modules/airports";
 
 const drawerWidth = 240;
 
@@ -63,7 +64,8 @@ const useStyles = makeStyles(theme => ({
     margin: "auto"
   },
   modal: {
-    width: "80%"
+    width: "80%",
+    height: "85%"
   },
   dialogTitle: {
     textAlign: "center"
@@ -77,10 +79,25 @@ export default function ClippedDrawer() {
   const [isModalOpen, setModalPosition] = useState(false);
 
   const { user } = useSelector(state => state.login);
-  const { airports, loading } = useSelector(state => state.airports);
+  const { airports, loading, selectedAirport } = useSelector(
+    state => state.airports
+  );
 
-  const closeModal = () => setModalPosition(false);
-  const openModal = () => setModalPosition(true);
+  const closeModal = () => {
+    setModalPosition(false);
+    dispatch(selectAirport({}));
+  };
+
+  const openModal = airport => {
+    dispatch(selectAirport(airport));
+    setModalPosition(true);
+  };
+
+  useEffect(() => {
+    if (!user) {
+      dispatch(getUser());
+    }
+  }, [user, dispatch]);
 
   useEffect(() => {
     if (!airports) {
@@ -119,12 +136,14 @@ export default function ClippedDrawer() {
       <main className={classes.content}>
         <div className={classes.toolbar} />
         <List component="nav" className={classes.list} aria-label="airports">
+
           {airports &&
             airports.map(airport => (
               <ListItem
                 button
-                onClick={openModal}
+                onClick={() => openModal(airport)}
                 classes={{ root: classes.listItem }}
+                key={airport.name}
               >
                 <ListItemIcon>
                   <LocalAirportIcon />
@@ -136,6 +155,7 @@ export default function ClippedDrawer() {
                 />
               </ListItem>
             ))}
+
           {loading && (
             <CircularProgress
               color="secondary"
@@ -152,7 +172,7 @@ export default function ClippedDrawer() {
         onClose={closeModal}
       >
         <DialogTitle id="dialog-title" classes={{ root: classes.dialogTitle }}>
-          Flights
+          {`${selectedAirport.name} Flights`}
         </DialogTitle>
         <DialogContent dividers>
           <DeparturesBoard />
