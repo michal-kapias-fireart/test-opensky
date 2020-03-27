@@ -4,13 +4,11 @@ import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
-import Typography from "@material-ui/core/Typography";
-import Box from "@material-ui/core/Box";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import FlightTakeoffIcon from "@material-ui/icons/FlightTakeoff";
 import FlightLandIcon from "@material-ui/icons/FlightLand";
-import FlightsTable from "../FlightsTable/FlightsTable";
+import TabPanel from "../TabPanel/TabPanel";
 import { getDeparture, getArrival } from "../../store/modules/airports";
 
 const useStyles = makeStyles({
@@ -28,23 +26,6 @@ const useStyles = makeStyles({
   }
 });
 
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <Typography
-      component="div"
-      role="tabpanel"
-      hidden={value !== index}
-      id={`tabpanel-${index}`}
-      aria-labelledby={`tab-${index}`}
-      {...other}
-    >
-      {value === index && <Box p={3}>{children}</Box>}
-    </Typography>
-  );
-}
-
 function a11yProps(index) {
   return {
     id: `tab-${index}`,
@@ -59,6 +40,11 @@ export default function ScrollableTabsButtonAuto() {
     state => state.airports
   );
   const [value, setValue] = React.useState(0);
+  const [interval, changeInterval] = React.useState(10);
+
+  const change = event => {
+    changeInterval(event.target.value);
+  };
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -66,11 +52,11 @@ export default function ScrollableTabsButtonAuto() {
 
   useEffect(() => {
     if (value) {
-      dispatch(getArrival());
+      dispatch(getArrival(interval));
     } else {
-      dispatch(getDeparture());
+      dispatch(getDeparture(interval));
     }
-  }, [value, dispatch]);
+  }, [value, interval, dispatch]);
 
   return (
     <div>
@@ -96,14 +82,22 @@ export default function ScrollableTabsButtonAuto() {
           />
         </Tabs>
       </AppBar>
-      <TabPanel value={value} index={0}>
-        Departing flights
-        <FlightsTable flights={departure} />
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        Arriving flights
-        <FlightsTable flights={arrival} />
-      </TabPanel>
+      <TabPanel
+        value={value}
+        index={0}
+        interval={interval}
+        onChange={change}
+        flights={departure}
+        flightsType="departing"
+      />
+      <TabPanel
+        value={value}
+        index={1}
+        interval={interval}
+        onChange={change}
+        flights={arrival}
+        flightsType="arrival"
+      />
 
       {error && (
         <FormHelperText error classes={{ root: classes.errorText }}>

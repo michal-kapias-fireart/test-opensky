@@ -67,8 +67,9 @@ export const selectAirport = airport => ({
   selectedAirport: airport
 });
 
-export const getDeparture = () => ({
-  type: GET_DEPARTURE
+export const getDeparture = (interval) => ({
+  type: GET_DEPARTURE,
+  interval
 });
 
 export const getDepartureSuccess = departure => ({
@@ -81,8 +82,9 @@ export const getDepartureFailure = error => ({
   error
 });
 
-export const getArrival = () => ({
-  type: GET_ARRIVAL
+export const getArrival = (interval) => ({
+  type: GET_ARRIVAL,
+  interval
 });
 
 export const getArrivalSuccess = arrival => ({

@@ -1,4 +1,5 @@
 import React from "react";
+import moment from "moment";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -26,6 +27,9 @@ function createData({
     arrivalAirportCandidatesCount
   };
 }
+
+const secondsToDate = seconds =>
+  moment.unix(seconds).format("YYYY/MM/DD HH:mm");
 
 export default function FlightsTable({ flights, loading }) {
   if (!flights) return null;
@@ -60,9 +64,13 @@ export default function FlightsTable({ flights, loading }) {
         <TableBody>
           {rows.map(row => (
             <TableRow key={row.icao24}>
-              <TableCell align="center">{row.firstSeen}</TableCell>
+              <TableCell align="center">
+                {secondsToDate(row.firstSeen)}
+              </TableCell>
               <TableCell align="center">{row.estDepartureAirport}</TableCell>
-              <TableCell align="center">{row.lastSeen}</TableCell>
+              <TableCell align="center">
+                {secondsToDate(row.lastSeen)}
+              </TableCell>
               <TableCell align="center">{row.estArrivalAirport}</TableCell>
               <TableCell align="center">
                 {row.departureAirportCandidatesCount}

@@ -13,6 +13,28 @@ import {
 import airports from "../../constants/airports";
 import { getDeparture, getArrival } from "../../api/airports";
 
+function errorHandling(error) {
+  return error.response && error.response.status === 404
+    ? "Not found results"
+    : "Something went wrong";
+}
+
+function* calculateParameters(interval) {
+  const store = yield select();
+  const {
+    selectedAirport: { ICAO: airport }
+  } = store.airports;
+
+  // minus one day in connection with Limitiations for anonymous (unauthenticated) users
+  const end = Math.round(new Date() / 1000) - oneDay;
+  const begin = end - interval * 60;
+  return {
+    airport,
+    begin,
+    end
+  };
+}
+
 function* getAirportsSaga() {
   try {
     yield delay(1000);
@@ -23,31 +45,31 @@ function* getAirportsSaga() {
   }
 }
 
+const oneDay = 86400;
+
 function* getDepartureSaga(action) {
-  const store = yield select();
-  const {
-    selectedAirport: { ICAO }
-  } = store.airports;
+  const params = yield calculateParameters(action.interval);
+
   try {
-    const { data } = yield call(getDeparture, { ICAO });
+    const { data } = yield call(getDeparture, params);
     yield put(getDepartureSuccess(data));
   } catch (error) {
-    let errorMessage = error.response.statusText || "Not found results";
+    console.error(error);
+    let errorMessage = errorHandling(error);
     yield put(getDepartureFailure(errorMessage));
   }
 }
 
 function* getArrivalSaga(action) {
-  const store = yield select();
-  const {
-    selectedAirport: { ICAO }
-  } = store.airports;
+  const params = yield calculateParameters(action.interval);
+
   try {
-    const { data } = yield call(getArrival, { ICAO });
+    const { data } = yield call(getArrival, params);
     yield put(getArrivalSuccess(data));
   } catch (error) {
-    let errorMessage = error.response.statusText || "Not found results";
-    yield put(getArrivalFailure(errorMessage));
+    console.error(error);
+    let errorMessage = errorHandling(error);
+    yield put(getDepartureFailure(errorMessage));
   }
 }
 
