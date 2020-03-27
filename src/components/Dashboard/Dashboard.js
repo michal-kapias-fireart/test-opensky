@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
@@ -11,7 +11,12 @@ import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogContent from "@material-ui/core/DialogContent";
+import Dialog from "@material-ui/core/Dialog";
 import LocalAirportIcon from "@material-ui/icons/LocalAirport";
+import DeparturesBoard from "../DeparturesBoard/DeparturesBoard";
 import { getAirports } from "../../store/modules/airports";
 
 const drawerWidth = 240;
@@ -48,6 +53,20 @@ const useStyles = makeStyles(theme => ({
     "&:hover": {
       backgroundColor: "rgba(0, 0, 0, 0.3)"
     }
+  },
+  spinner: {
+    position: "absolute",
+    top: "200px",
+    bottom: 0,
+    right: 0,
+    left: 0,
+    margin: "auto"
+  },
+  modal: {
+    width: "80%"
+  },
+  dialogTitle: {
+    textAlign: "center"
   }
 }));
 
@@ -55,8 +74,13 @@ export default function ClippedDrawer() {
   const classes = useStyles();
   const dispatch = useDispatch();
 
+  const [isModalOpen, setModalPosition] = useState(false);
+
   const { user } = useSelector(state => state.login);
-  const { airports } = useSelector(state => state.airports);
+  const { airports, loading } = useSelector(state => state.airports);
+
+  const closeModal = () => setModalPosition(false);
+  const openModal = () => setModalPosition(true);
 
   useEffect(() => {
     if (!airports) {
@@ -99,7 +123,7 @@ export default function ClippedDrawer() {
             airports.map(airport => (
               <ListItem
                 button
-                onClick={() => alert(airport.name)}
+                onClick={openModal}
                 classes={{ root: classes.listItem }}
               >
                 <ListItemIcon>
@@ -112,8 +136,28 @@ export default function ClippedDrawer() {
                 />
               </ListItem>
             ))}
+          {loading && (
+            <CircularProgress
+              color="secondary"
+              classes={{ root: classes.spinner }}
+            />
+          )}
         </List>
       </main>
+      <Dialog
+        maxWidth={false}
+        aria-labelledby="dialog-title"
+        open={isModalOpen}
+        classes={{ paper: classes.modal }}
+        onClose={closeModal}
+      >
+        <DialogTitle id="dialog-title" classes={{ root: classes.dialogTitle }}>
+          Flights
+        </DialogTitle>
+        <DialogContent dividers>
+          <DeparturesBoard />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
