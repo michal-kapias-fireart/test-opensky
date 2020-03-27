@@ -1,3 +1,4 @@
-import login from './login';
+import login from "./login";
+import airports from "./airports";
 
-export default [login];
+export default [login, airports];

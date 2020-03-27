@@ -1,0 +1,54 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "ICAO": "KATL",
+      "name": "Hartsfield-Jackson Atlanta International Airport"
+    },
+    {
+      "id": 2,
+      "ICAO": "ZBAA",
+      "name": "Beijing Capital International Airport"
+    },
+    {
+      "id": 3,
+      "ICAO": "OMDB",
+      "name": "Dubai International Airport"
+    },
+    {
+      "id": 4,
+      "ICAO": "KLAX",
+      "name": "Los Angeles International Airport"
+    },
+    {
+      "id": 5,
+      "ICAO": "RJTT",
+      "name": "Tokyo Haneda Airport"
+    },
+    {
+      "id": 6,
+      "ICAO": "KORD",
+      "name": "Chicago O’Hare International Airport"
+    },
+    {
+      "id": 7,
+      "ICAO": "EGLL",
+      "name": "London Heathrow Airport"
+    },
+    {
+      "id": 8,
+      "ICAO": "VHHH",
+      "name": "Hong Kong International Airport"
+    },
+    {
+      "id": 9,
+      "ICAO": "ZSPD",
+      "name": "Shanghai Pudong International Airport"
+    },
+    {
+      "id": 10,
+      "ICAO": "LFPG",
+      "name": "Paris Charles de Gaulle Airport"
+    }
+  ]
+}

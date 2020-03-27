@@ -6,6 +6,7 @@ import {
   Redirect
 } from "react-router-dom";
 import LoginPage from "./components/LoginPage/LoginPage";
+import Dashboard from "./components/Dashboard/Dashboard";
 import "./App.css";
 
 const ProtectedRoute = ({ component: Component, ...rest }) => (
@@ -22,7 +23,6 @@ const ProtectedRoute = ({ component: Component, ...rest }) => (
 );
 
 const NotFoundPage = () => <div>Not found page... </div>;
-const Dashboard = () => <div>Dashboard</div>;
 
 function App() {
   return (
